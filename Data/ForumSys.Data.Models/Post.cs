@@ -19,7 +19,7 @@
 
         public string UserId { get; set; }
 
-        public virtual ApplicationUser Ùser { get; set; }
+        public virtual ApplicationUser User { get; set; }
 
         public int CategoryId { get; set; }
 

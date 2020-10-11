@@ -1,0 +1,52 @@
+﻿@using ForumSys.Common
+@model ForumSys.Web.ViewModels.OutPutViewModels.Category.GetByNameViewModel
+
+@{
+    ViewData["Title"] = Model.Title;
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<div class="alert alert-info">@Model.Description</div>
+@foreach (var post in Model.Posts)
+{
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/css/font-awesome.min.css" />
+    <div class="container">
+        <div class="well">
+            <div class="media">
+                <a class="pull-left mr-3" href="#">
+                    <img class="media-object" src="@Model.ImageURL" width="250">
+                </a>
+                <div class="media-body">
+                    <h4 class="media-heading">@post.Title</h4>
+                    <p class="text-right">@post.UserUserName</p>
+                    <p>
+                        Body text
+                    </p>
+                    <ul class="list-inline list-unstyled">
+                        <li><span><i class="glyphicon glyphicon-calendar"></i>@post.CreatedOn Comments @post.CommentsCount</span></li>
+                        @*<li>|</li>
+                        <span><i class="glyphicon glyphicon-comment"></i>@post.CommentsCount</span>
+                        <li>|</li>
+                        <li>
+                            <span class="glyphicon glyphicon-star"></span>
+                            <span class="glyphicon glyphicon-star"></span>
+                            <span class="glyphicon glyphicon-star"></span>
+                            <span class="glyphicon glyphicon-star"></span>
+                            <span class="glyphicon glyphicon-star-empty"></span>
+                        </li>
+                        <li>|</li>*@
+                        <li>
+                            <!-- Use Font Awesome https://fortawesome.github.io/Font-Awesome/ -->
+                            <span><i class="fa fa-facebook-square"></i></span>
+                            <span><i class="fa fa-twitter-square"></i></span>
+                            <span><i class="fa fa-google-plus-square"></i></span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+}

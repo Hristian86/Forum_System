@@ -1,0 +1,20 @@
+﻿@using ForumSys.Common
+@model ForumSys.Web.ViewModels.OutPutViewModels.Category.CategoryProectionViewModel
+@{
+    ViewData["Title"] = "Categories";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<div class="row">
+    @foreach (var categories in Model.Categories)
+    {
+        <div class="col-lg-4 media mb-4">
+            <img src="@categories.ImageURL" style="width:100px" class="mr-3" alt="@categories.Title">
+            <div class="media-body">
+                <h5 class="mt-0"><a href="@categories.URL">@categories.Title (@categories.PostsCount)</a></h5>
+                @categories.Description
+            </div>
+        </div>
+    }
+</div>

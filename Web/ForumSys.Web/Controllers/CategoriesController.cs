@@ -5,20 +5,36 @@
     using System.Linq;
     using System.Threading.Tasks;
 
+    using ForumSys.Services.Data;
+    using ForumSys.Services.Mapping;
+    using ForumSys.Web.ViewModels.OutPutViewModels.Category;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
 
     public class CategoriesController : Controller
     {
-        public CategoriesController()
-        {
+        private readonly ICategoryService categoryService;
 
+        public CategoriesController(ICategoryService categoryService)
+        {
+            this.categoryService = categoryService;
+        }
+
+        public ActionResult ByName(string name)
+        {
+            var viewModel = this.categoryService.GetByName<GetByNameViewModel>(name);
+            return this.View(viewModel);
         }
 
         // GET: Categories
         public ActionResult Index()
         {
-            return this.View();
+            var viewModel = new CategoryProectionViewModel();
+
+            var categories = this.categoryService.GetAll<CategoryViewModel>();
+            viewModel.Categories = categories;
+
+            return this.View(viewModel);
         }
 
         // GET: Categories/Details/5
