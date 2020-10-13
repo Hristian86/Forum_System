@@ -1,0 +1,9 @@
+﻿@model ForumSys.Web.ViewModels.OutPutViewModels.Posts.PostViewModel
+@{
+    ViewData["Title"] = Model.Title;
+}
+
+<h1>@ViewData["Title"]</h1>
+
+@* To Do some form for posts *@
+@Html.Raw(Model.SanitazeContent)

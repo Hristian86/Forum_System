@@ -8,6 +8,7 @@
     using ForumSys.Services.Data;
     using ForumSys.Services.Mapping;
     using ForumSys.Web.ViewModels.OutPutViewModels.Category;
+    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
 
