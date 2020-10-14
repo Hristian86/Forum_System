@@ -44,6 +44,8 @@
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
+
+                // To Do send message to my email for example
                 return this.RedirectToAction("Home", "Error");
             }
         }
@@ -64,7 +66,8 @@
         {
             if (!this.ModelState.IsValid)
             {
-                return this.BadRequest();
+                // Global message for not created post
+                return this.RedirectToAction("Index", "Categories");
             }
 
             try
@@ -76,6 +79,8 @@
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
+
+                // To Do send message to my email for example
                 return this.RedirectToAction("Home", "Error");
             }
         }

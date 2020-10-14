@@ -6,4 +6,34 @@
 <h1>@ViewData["Title"]</h1>
 
 @* To Do some form for posts *@
-@Html.Raw(Model.SanitazeContent)
+
+
+<div class="media">
+    @*<img class="mr-3" src="..." alt="Generic placeholder image">*@
+    <div class="media-body">
+        <h5 class="mt-0"></h5>
+        @Html.Raw(Model.SanitazeContent)
+        <hr />
+        <div class="row">
+            <div class="col-6">
+                Created on: @Model.CreatedOn
+            </div>
+
+            <div class="col-6 text-right">
+                By user: @Model.UserUserName
+            </div>
+        </div>
+        <hr />
+        <h3>Comments</h3>
+        <hr />
+        <div class="media pl-sm-5 ml-sm-5 mt-3">
+            <a class="pr-3" href="#">
+                @*<img src="..." alt="Generic placeholder image">*@
+            </a>
+            <div class="media-body">
+                <h5 class="mt-0">Media heading</h5>
+                Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.
+            </div>
+        </div>
+    </div>
+</div>

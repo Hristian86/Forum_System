@@ -24,6 +24,11 @@
         public ActionResult ByName(string name)
         {
             var viewModel = this.categoryService.GetByName<GetByNameViewModel>(name);
+            if (viewModel == null)
+            {
+                return this.RedirectToAction("Index", "Categories");
+            }
+
             return this.View(viewModel);
         }
 
