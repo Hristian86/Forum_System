@@ -20,12 +20,12 @@
                 </a>
                 <div class="media-body">
                     <h4 class="media-heading"><a asp-controller="Post" asp-action="ById" asp-route-id="@post.Id">@post.Title</a></h4>
-                    <p class="text-right">@post.UserUserName</p>
-                    <p>
+                    <p class="text-right"><i class="fa fa-user"></i>@post.UserUserName</p>
+                    <p class="short-content-post">
                         @post.ShortContent
                     </p>
                     <ul class="list-inline list-unstyled">
-                        <li><span><i class="glyphicon glyphicon-calendar"></i>@post.CreatedOn Comments @post.CommentsCount</span></li>
+                        <li><span><i class="fa fa-calendar" aria-hidden="true"></i>@post.CreatedOn <i class="fa fa-comment"></i> @post.CommentsCount</span></li>
                         @*<li>|</li>
                         <span><i class="glyphicon glyphicon-comment"></i>@post.CommentsCount</span>
                         <li>|</li>
@@ -37,12 +37,11 @@
                             <span class="glyphicon glyphicon-star-empty"></span>
                         </li>
                         <li>|</li>*@
-                        <li>
-                            <!-- Use Font Awesome https://fortawesome.github.io/Font-Awesome/ -->
+                        @*<li>
                             <span><i class="fa fa-facebook-square"></i></span>
                             <span><i class="fa fa-twitter-square"></i></span>
                             <span><i class="fa fa-google-plus-square"></i></span>
-                        </li>
+                        </li>*@
                     </ul>
                 </div>
             </div>

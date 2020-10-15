@@ -48,6 +48,11 @@
                         options.MinimumSameSitePolicy = SameSiteMode.None;
                     });
 
+            services.AddAntiforgery(options =>
+            {
+                options.HeaderName = "X-CSRF-TOKEN";
+            });
+
             services.AddControllersWithViews(options =>
             {
                 options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
@@ -67,6 +72,7 @@
             services.AddTransient<ISettingsService, SettingsService>();
             services.AddTransient<ICategoryService, CategoryService>();
             services.AddTransient<IPostService, PostService>();
+            services.AddTransient<IVoteService, VoteService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -104,21 +110,22 @@
 
             app.UseAuthentication();
             app.UseAuthorization();
-            app.UseStatusCodePages();
-            app.UseStatusCodePagesWithReExecute("/Home/HandleError/{0}");
 
-            // this works
-            app.UseStatusCodePagesWithRedirects("/Home/HandleError/{0}");
+            //app.UseStatusCodePages();
+            //app.UseStatusCodePagesWithReExecute("/Home/HandleError/{0}");
 
-            app.Use(async (context, next) =>
-            {
-                await next();
-                if (context.Response.StatusCode == 404)
-                {
-                    context.Request.Path = "/Home";
-                    await next();
-                }
-            });
+            //// this works
+            //app.UseStatusCodePagesWithRedirects("/Home/HandleError/{0}");
+
+            //app.Use(async (context, next) =>
+            //{
+            //    await next();
+            //    if (context.Response.StatusCode == 404)
+            //    {
+            //        context.Request.Path = "/Home";
+            //        await next();
+            //    }
+            //});
 
             app.UseEndpoints(
                 endpoints =>
