@@ -104,6 +104,21 @@
 
             app.UseAuthentication();
             app.UseAuthorization();
+            app.UseStatusCodePages();
+            app.UseStatusCodePagesWithReExecute("/Home/HandleError/{0}");
+
+            // this works
+            app.UseStatusCodePagesWithRedirects("/Home/HandleError/{0}");
+
+            app.Use(async (context, next) =>
+            {
+                await next();
+                if (context.Response.StatusCode == 404)
+                {
+                    context.Request.Path = "/Home";
+                    await next();
+                }
+            });
 
             app.UseEndpoints(
                 endpoints =>

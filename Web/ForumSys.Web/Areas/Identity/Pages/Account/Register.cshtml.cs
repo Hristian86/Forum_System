@@ -48,7 +48,9 @@ namespace ForumSys.Web.Areas.Identity.Pages.Account
         {
             [Required]
             [EmailAddress]
+            [StringLength(55, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
             [Display(Name = "Email")]
+            [RegularExpression(@"^([\w\.\-]{3,30})@([\w\-]{3,15})((\.(\w){2,3})+)$", ErrorMessage = "Invalid email")]
             public string Email { get; set; }
 
             [Required]
