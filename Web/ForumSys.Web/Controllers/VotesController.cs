@@ -28,6 +28,18 @@
             this.userManager = userManager;
         }
 
+        public ActionResult Get(int postId)
+        {
+            var votes = this.voteService.GetVotes(postId);
+
+            var responceModel = new ResponceViewModel()
+            {
+                VotesCount = votes,
+            };
+
+            return this.Ok(responceModel);
+        }
+
         [Authorize]
         [HttpPost]
         public async Task<ActionResult> Post(InputVoteModel model)
