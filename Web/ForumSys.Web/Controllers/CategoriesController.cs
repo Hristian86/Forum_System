@@ -14,16 +14,39 @@
 
     public class CategoriesController : Controller
     {
-        private readonly ICategoryService categoryService;
+        private const int ItemsPerPage = 5;
 
-        public CategoriesController(ICategoryService categoryService)
+        private readonly ICategoryService categoryService;
+        private readonly IPostService postService;
+
+        public CategoriesController(
+            ICategoryService categoryService,
+            IPostService postService)
         {
             this.categoryService = categoryService;
+            this.postService = postService;
         }
 
-        public ActionResult ByName(string name)
+        public ActionResult ByName(string name, int? page)
         {
+            if (!page.HasValue || page <= 0)
+            {
+                page = 1;
+            }
+
             var viewModel = this.categoryService.GetByName<GetByNameViewModel>(name);
+            var count = viewModel.PostsCount;
+            var pageCount = (int)Math.Ceiling((double)count / ItemsPerPage);
+            if (page > pageCount)
+            {
+                page = pageCount;
+            }
+
+            viewModel.PagesCount = pageCount;
+
+            viewModel.ForumPosts = this.postService.GetByCategoryId<PostInCategoryViewModel>(viewModel.Id, ItemsPerPage, (int)((page - 1) * ItemsPerPage));
+            viewModel.CurrentPage = (int)page;
+
             if (viewModel == null)
             {
                 return this.RedirectToAction("Index", "Categories");

@@ -40,5 +40,19 @@
                 .To<T>().FirstOrDefault();
             return post;
         }
+
+        public IEnumerable<T> GetByCategoryId<T>(int categoryID, int? take = null, int skip = 0)
+        {
+            IQueryable<Post> querey = this.postRepository.All()
+                .OrderByDescending(x => x.CreatedOn)
+                .Where(x => x.CategoryId == categoryID)
+                .Skip(skip);
+            if (take.HasValue)
+            {
+                querey = querey.Take(take.Value);
+            }
+
+            return querey.To<T>().ToList();
+        }
     }
 }

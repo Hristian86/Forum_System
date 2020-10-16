@@ -31,10 +31,20 @@
                 <form id="votesForm" method="post">
                     <input type="hidden" />
                 </form>
+                @{
+                    var upVote = "text-primary";
+                    var downVote = "text-primary";
+
+                    var dispaly = Model.VotesCount == 1 ?
+                        upVote = "text-warning" :
+                        Model.VotesCount == 0 ? downVote = "text-primary" : downVote = "text-warning";
+                }
                 <div class="d-flex justify-content-end vote-container">
-                    <div class="mr-3"><i onclick="upVote(@Model.Id)" class="fa fa-thumbs-up"></i></div>
-                    <div id="votesCount" class="mr-4 text-right">@Model.VotesCount</div>
-                    <div class=""><i onclick="downVote(@Model.Id)" class="fa fa-thumbs-down"></i></div>
+                    <div class="mr-3"><i onclick="upVote(@Model.Id)" id="upVoteIcont" class="fa fa-thumbs-up @upVote hover-button-type"></i></div>
+                    <div id="votesCount" class="mr-4 text-right">
+                        @Model.VotesCount
+                    </div>
+                    <div class=""><i id="downVoteIcont" onclick="downVote(@Model.Id)" class="fa fa-thumbs-down @downVote hover-button-type"></i></div>
                 </div>
             </div>
         </div>
@@ -70,6 +80,13 @@
                 headers: { 'X-CSRF-TOKEN': token },
                 success: function (data) {
                     $("#votesCount").html(data.votesCount);
+
+                    let up = document.getElementById("upVoteIcont");
+                    up.setAttribute("class", "fa fa-thumbs-up text-warning hover-button-type");
+
+                    let down = document.getElementById("downVoteIcont");
+
+                    down.setAttribute("class", "fa fa-thumbs-up text-primary hover-button-type");
                 }
             })
 
@@ -94,6 +111,10 @@
                     //    $("#votesCount").html("0");
                     //} else {
                         $("#votesCount").html(data.votesCount);
+
+                        document.getElementById("upVoteIcont").setAttribute("class", "fa fa-thumbs-up text-primary hover-button-type");
+
+                    document.getElementById("downVoteIcont").setAttribute("class", "fa fa-thumbs-up text-warning hover-button-type");
                     }
                 }
             })
