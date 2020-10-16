@@ -36,6 +36,11 @@
 
             var viewModel = this.categoryService.GetByName<GetByNameViewModel>(name);
             var count = viewModel.PostsCount;
+            if (count == 0)
+            {
+                return this.View(viewModel);
+            }
+
             var pageCount = (int)Math.Ceiling((double)count / ItemsPerPage);
             if (page > pageCount)
             {
