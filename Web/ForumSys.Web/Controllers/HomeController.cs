@@ -18,8 +18,8 @@
             return this.View();
         }
 
-        [Route("/Home/HandleError/{code:int}")]
-        public IActionResult HandleError(int code)
+        //[Route("/Home/HandleError/{code:int}")]
+        public IActionResult HandleError(int code = 404)
         {
             this.ViewData["ErrorMessage"] = $"Error occurred. Error: {code}";
             return this.View("~/Views/Shared/HandleError.cshtml");

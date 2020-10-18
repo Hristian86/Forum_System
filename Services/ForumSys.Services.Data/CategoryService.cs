@@ -35,6 +35,11 @@
                 .Where(x => x.Name == name)
                 .To<T>()
                 .FirstOrDefault();
+            if (category == null)
+            {
+                throw new ArgumentNullException("The category name is not found");
+            }
+
             return category;
         }
     }

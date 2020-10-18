@@ -38,6 +38,11 @@
         {
             var post = this.postRepository.All().Where(x => x.Id == id)
                 .To<T>().FirstOrDefault();
+            if (post == null)
+            {
+                throw new ArgumentNullException("The post is not found");
+            }
+
             return post;
         }
 

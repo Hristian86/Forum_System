@@ -5,6 +5,7 @@
     using System.Linq;
     using System.Threading.Tasks;
 
+    using ForumSys.Common;
     using ForumSys.Services.Data;
     using ForumSys.Services.Mapping;
     using ForumSys.Web.ViewModels.OutPutViewModels.Category;
@@ -34,56 +35,75 @@
                 page = 1;
             }
 
-            var viewModel = this.categoryService.GetByName<GetByNameViewModel>(name);
-            var count = viewModel.PostsCount;
-            if (count == 0)
+            try
             {
+                var viewModel = this.categoryService.GetByName<GetByNameViewModel>(name);
+                var count = viewModel.PostsCount;
+                if (count == 0)
+                {
+                    return this.View(viewModel);
+                }
+
+                var pageCount = (int)Math.Ceiling((double)count / ItemsPerPage);
+                if (page > pageCount)
+                {
+                    page = pageCount;
+                }
+
+                viewModel.PagesCount = pageCount;
+
+                viewModel.ForumPosts = this.postService.GetByCategoryId<PostInCategoryViewModel>(viewModel.Id, ItemsPerPage, (int)((page - 1) * ItemsPerPage));
+                viewModel.CurrentPage = (int)page;
+
+                if (viewModel == null)
+                {
+                    return this.RedirectToAction("Index", "Categories");
+                }
+
                 return this.View(viewModel);
             }
-
-            var pageCount = (int)Math.Ceiling((double)count / ItemsPerPage);
-            if (page > pageCount)
+            catch (Exception)
             {
-                page = pageCount;
+                // To Do send message to my email for example
+                return this.RedirectToAction("HandleError", "Home");
             }
-
-            viewModel.PagesCount = pageCount;
-
-            viewModel.ForumPosts = this.postService.GetByCategoryId<PostInCategoryViewModel>(viewModel.Id, ItemsPerPage, (int)((page - 1) * ItemsPerPage));
-            viewModel.CurrentPage = (int)page;
-
-            if (viewModel == null)
-            {
-                return this.RedirectToAction("Index", "Categories");
-            }
-
-            return this.View(viewModel);
         }
 
         // GET: Categories
         public ActionResult Index()
         {
-            var viewModel = new CategoryProectionViewModel();
+            try
+            {
+                var viewModel = new CategoryProectionViewModel();
 
-            var categories = this.categoryService.GetAll<CategoryViewModel>();
-            viewModel.Categories = categories;
+                var categories = this.categoryService.GetAll<CategoryViewModel>();
+                viewModel.Categories = categories;
 
-            return this.View(viewModel);
+                return this.View(viewModel);
+            }
+            catch (Exception)
+            {
+                // To Do send message to my email for example
+                return this.RedirectToAction("HandleError", "Home");
+            }
         }
 
         // GET: Categories/Details/5
+        [Authorize(GlobalConstants.AdministratorRoleName)]
         public ActionResult Details(int id)
         {
             return this.View();
         }
 
         // GET: Categories/Create
+        [Authorize(GlobalConstants.AdministratorRoleName)]
         public ActionResult Create()
         {
             return this.View();
         }
 
         // POST: Categories/Create
+        [Authorize(GlobalConstants.AdministratorRoleName)]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create(IFormCollection collection)
@@ -100,12 +120,14 @@
         }
 
         // GET: Categories/Edit/5
+        [Authorize(GlobalConstants.AdministratorRoleName)]
         public ActionResult Edit(int id)
         {
             return this.View();
         }
 
         // POST: Categories/Edit/5
+        [Authorize(GlobalConstants.AdministratorRoleName)]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit(int id, IFormCollection collection)
@@ -122,12 +144,14 @@
         }
 
         // GET: Categories/Delete/5
+        [Authorize(GlobalConstants.AdministratorRoleName)]
         public ActionResult Delete(int id)
         {
             return this.View();
         }
 
         // POST: Categories/Delete/5
+        [Authorize(GlobalConstants.AdministratorRoleName)]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Delete(int id, IFormCollection collection)

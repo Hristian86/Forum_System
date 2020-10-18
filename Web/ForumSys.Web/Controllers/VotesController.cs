@@ -30,14 +30,22 @@
 
         public ActionResult Get(int postId)
         {
-            var votes = this.voteService.GetVotes(postId);
-
-            var responceModel = new ResponceViewModel()
+            try
             {
-                VotesCount = votes,
-            };
+                var votes = this.voteService.GetVotes(postId);
 
-            return this.Ok(responceModel);
+                var responceModel = new ResponceViewModel()
+                {
+                    VotesCount = votes,
+                };
+
+                return this.Ok(responceModel);
+            }
+            catch (Exception)
+            {
+                // To Do send message to my email for example
+                return this.RedirectToAction("HandleError", "Home", new { code = 500 });
+            }
         }
 
         [Authorize]
@@ -69,7 +77,7 @@
                 Console.WriteLine(ex.Message);
 
                 // To Do send message to my email for example
-                return this.RedirectToAction("Home", "Error");
+                return this.RedirectToAction("HandleError", "Home");
             }
         }
     }

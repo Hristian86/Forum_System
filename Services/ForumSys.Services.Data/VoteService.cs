@@ -5,6 +5,7 @@
     using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
+
     using ForumSys.Data.Common.Repositories;
     using ForumSys.Data.Models;
 
@@ -20,7 +21,8 @@
         public int GetVotes(int postId)
         {
             var votes = this.voteRepository.All()
-                .Where(x => x.PostId == postId).Sum(x => (int)x.Type);
+                .Where(x => x.PostId == postId)
+                .Sum(x => (int)x.Type);
             return votes;
         }
 

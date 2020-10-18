@@ -34,11 +34,6 @@
             try
             {
                 var viewModel = this.postService.GetById<PostViewModel>(id);
-                if (viewModel == null)
-                {
-                    return this.NotFound();
-                }
-
                 return this.View(viewModel);
             }
             catch (Exception ex)
@@ -46,18 +41,26 @@
                 Console.WriteLine(ex.Message);
 
                 // To Do send message to my email for example
-                return this.RedirectToAction("Home", "Error");
+                return this.RedirectToAction("Home", "HandleError");
             }
         }
 
         [Authorize]
         public IActionResult Create()
         {
-            var categoriesList = this.categories.GetAll<CategoryDropDownViewModel>();
-            var viewModel = new PostCreateInputModel();
-            viewModel.Categories = categoriesList;
+            try
+            {
+                var categoriesList = this.categories.GetAll<CategoryDropDownViewModel>();
+                var viewModel = new PostCreateInputModel();
+                viewModel.Categories = categoriesList;
 
-            return this.View(viewModel);
+                return this.View(viewModel);
+            }
+            catch (Exception)
+            {
+                // To Do send message to my email for example
+                return this.RedirectToAction("HandleError", "Home");
+            }
         }
 
         [HttpPost]
@@ -81,7 +84,7 @@
                 Console.WriteLine(ex.Message);
 
                 // To Do send message to my email for example
-                return this.RedirectToAction("Home", "Error");
+                return this.RedirectToAction("HandleError", "Home");
             }
         }
     }

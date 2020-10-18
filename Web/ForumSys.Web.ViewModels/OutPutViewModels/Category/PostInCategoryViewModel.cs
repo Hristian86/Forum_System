@@ -9,7 +9,7 @@
     using ForumSys.Data.Models;
     using ForumSys.Services.Mapping;
 
-    public class PostInCategoryViewModel : IMapFrom<Post>, IMapFrom<Vote>
+    public class PostInCategoryViewModel : IMapFrom<Post>
     {
         public int Id { get; set; }
 
