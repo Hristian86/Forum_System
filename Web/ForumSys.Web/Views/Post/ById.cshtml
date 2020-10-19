@@ -66,84 +66,66 @@
 
         </div>
         <hr />
-        <div class="media pl-sm-5 ml-sm-5 mt-3">
-            <a class="pr-3" href="#">
-                @*<img src="..." alt="Generic placeholder image">*@
-            </a>
-            <div class="media-body">
-                <h5 class="mt-0">Media heading</h5>
-                Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.
+        @foreach (var comments in Model.Comments)
+        {
+
+            <div class="media pl-sm-5 ml-sm-5 mt-3">
+                <a class="pr-3" href="#">
+                    @*<img src="..." alt="Generic placeholder image">*@
+                </a>
+                <div class="media-body">
+                    <h5 class="mt-0">@comments.Title</h5>
+                    @Html.Raw(comments.SenitizedContent)
+                    <br />
+                    <i class="fa fa-calendar pt-1" aria-hidden="true"></i>@comments.CreatedOn
+                </div>
+                <i class="fa fa-user pt-1"></i>@comments.UserUserName
             </div>
-        </div>
+
+            <hr />
+        }
+
+        <hr />
+
+        <form asp-action="Create" asp-area="" asp-controller="Comments" method="post">
+
+            <div>
+                <input type="hidden" name="PostId" value="@Model.Id" />
+            </div>
+
+            <div>
+                <label>Title</label>
+                <input type="text" class="form-control" name="Title" required />
+            </div>
+
+            <div>
+                <label>Content</label>
+                <textarea id="textValidate" name="Content" class="form-control"></textarea>
+                @*<span asp-validation-for="" class="text-danger"></span>*@
+            </div>
+
+            <input onclick="validate()" class="btn btn-outline-primary mt-3" type="submit" name="submit" value="Add Comment" />
+        </form>
     </div>
 </div>
 
 @section Scripts {
+
     <script>
-        const error = document.getElementById('errorField');
-        const upVote = async (postId) => {
-            var json = {
-                postId: postId,
-                isUpVote: true
-            };
-
-            var token = $("#votesForm input[name=__RequestVerificationToken]").val();
-
-            $.ajax({
-                url: "/api/votes",
-                type: "POST",
-                data: JSON.stringify(json),
-                contentType: "application/json; charset=utf-8",
-                dataType: "json",
-                headers: { 'X-CSRF-TOKEN': token },
-                success: function (data) {
-                    $("#votesCount").html(data.votesCount);
-
-                    let up = document.getElementById("upVoteIcont");
-                    up.setAttribute("class", "fa fa-thumbs-up text-warning hover-button-type");
-
-                    let down = document.getElementById("downVoteIcont");
-
-                    down.setAttribute("class", "fa fa-thumbs-down text-primary hover-button-type");
-                    error.innerHTML = "";
-                },
-                error: function (err) {
-                    error.innerHTML = "Must be logged";
-                }
-            })
-
+        function validate() {
+            const data = document.getElementById("#textValidate");
+            console.log(data);
+            return false;
         }
-        const downVote = (postId) => {
-            var json = {
-                postId: postId,
-                isUpVote: false
-            };
-
-            var token = $("#votesForm input[name=__RequestVerificationToken]").val();
-
-            $.ajax({
-                url: "/api/votes",
-                type: "POST",
-                data: JSON.stringify(json),
-                contentType: "application/json; charset=utf-8",
-                dataType: "json",
-                headers: { 'X-CSRF-TOKEN': token },
-                success: function (data) {
-                    //    $("#votesCount").html("0");
-                    //} else {
-                    $("#votesCount").html(data.votesCount);
-
-                    document.getElementById("upVoteIcont").setAttribute("class", "fa fa-thumbs-up text-primary hover-button-type");
-
-                    document.getElementById("downVoteIcont").setAttribute("class", "fa fa-thumbs-down text-warning hover-button-type");
-                    error.innerHTML = "";
-                },
-                error: function (err) {
-                    error.innerHTML = "Must be logged";
-                }
-            })
-        }
-
     </script>
 
+    <script src="/lib/tinymce/tinymce.min.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        tinymce.init({
+            selector: "textarea",
+            plugins: [
+                "image paste table link code media"
+            ]
+        });
+    </script>
 }

@@ -12,5 +12,7 @@
         T GetById<T>(int id);
 
         IEnumerable<T> GetByCategoryId<T>(int categoryID, int? take = null, int skip = 0);
+
+        bool PostExists(int postId);
     }
 }

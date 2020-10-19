@@ -59,5 +59,12 @@
 
             return query.To<T>().ToList();
         }
+
+        public bool PostExists(int postId)
+        {
+            bool exists = this.postRepository.All()
+                .Any(x => x.Id == postId);
+            return exists;
+        }
     }
 }
