@@ -39,6 +39,8 @@
             {
                 var viewModel = this.categoryService.GetByName<GetByNameViewModel>(name);
                 var count = viewModel.PostsCount;
+
+                // Preventing exceptions for pagination
                 if (count == 0)
                 {
                     return this.View(viewModel);

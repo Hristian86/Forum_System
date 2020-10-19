@@ -48,16 +48,16 @@
 
         public IEnumerable<T> GetByCategoryId<T>(int categoryID, int? take = null, int skip = 0)
         {
-            IQueryable<Post> querey = this.postRepository.All()
+            IQueryable<Post> query = this.postRepository.All()
                 .OrderByDescending(x => x.CreatedOn)
                 .Where(x => x.CategoryId == categoryID)
                 .Skip(skip);
             if (take.HasValue)
             {
-                querey = querey.Take(take.Value);
+                query = query.Take(take.Value);
             }
 
-            return querey.To<T>().ToList();
+            return query.To<T>().ToList();
         }
     }
 }

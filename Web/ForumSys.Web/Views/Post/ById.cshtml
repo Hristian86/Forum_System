@@ -40,13 +40,30 @@
                         Model.VotesCount == 0 ? downVote = "text-primary" : downVote = "text-warning";
                 }
                 <div class="d-flex justify-content-end vote-container">
-                    <div class="mr-3"><i onclick="upVote(@Model.Id)" id="upVoteIcont" class="fa fa-thumbs-up @upVote hover-button-type"></i></div>
+                    <span class="mr-3 text-danger" id="errorField"></span>
+                    <div class="mr-3">
+                        <i data-toggle="tooltip"
+                           data-placement="bottom"
+                           title="Like"
+                           onclick="upVote(@Model.Id)"
+                           id="upVoteIcont"
+                           class="fa fa-thumbs-up @upVote hover-button-type"></i>
+                    </div>
                     <div id="votesCount" class="mr-4 text-right">
                         @Model.VotesCount
                     </div>
-                    <div class=""><i id="downVoteIcont" onclick="downVote(@Model.Id)" class="fa fa-thumbs-down @downVote hover-button-type"></i></div>
+                    <div class="">
+                        <i data-toggle="tooltip"
+                           data-placement="bottom"
+                           title="Un like"
+                           id="downVoteIcont"
+                           onclick="downVote(@Model.Id)"
+                           class="fa fa-thumbs-down @downVote hover-button-type"></i>
+                    </div>
+
                 </div>
             </div>
+
         </div>
         <hr />
         <div class="media pl-sm-5 ml-sm-5 mt-3">
@@ -63,6 +80,7 @@
 
 @section Scripts {
     <script>
+        const error = document.getElementById('errorField');
         const upVote = async (postId) => {
             var json = {
                 postId: postId,
@@ -87,12 +105,16 @@
                     let down = document.getElementById("downVoteIcont");
 
                     down.setAttribute("class", "fa fa-thumbs-down text-primary hover-button-type");
+                    error.innerHTML = "";
+                },
+                error: function (err) {
+                    error.innerHTML = "Must be logged";
                 }
             })
 
         }
         const downVote = (postId) => {
-             var json = {
+            var json = {
                 postId: postId,
                 isUpVote: false
             };
@@ -107,15 +129,17 @@
                 dataType: "json",
                 headers: { 'X-CSRF-TOKEN': token },
                 success: function (data) {
-                    if (data.votesCount < 0) {
                     //    $("#votesCount").html("0");
                     //} else {
-                        $("#votesCount").html(data.votesCount);
+                    $("#votesCount").html(data.votesCount);
 
-                        document.getElementById("upVoteIcont").setAttribute("class", "fa fa-thumbs-up text-primary hover-button-type");
+                    document.getElementById("upVoteIcont").setAttribute("class", "fa fa-thumbs-up text-primary hover-button-type");
 
                     document.getElementById("downVoteIcont").setAttribute("class", "fa fa-thumbs-down text-warning hover-button-type");
-                    }
+                    error.innerHTML = "";
+                },
+                error: function (err) {
+                    error.innerHTML = "Must be logged";
                 }
             })
         }
