@@ -76,12 +76,12 @@
         @foreach (var comments in Model.Comments.OrderByDescending(x => x.CreatedOn))
         {
 
-            <div class="media pl-sm-5 ml-sm-5 mt-3">
+            <div class="media pl-sm-5 ml-sm-5 mt-5">
                 <a class="pr-3" href="#">
                     @*<img src="..." alt="Generic placeholder image">*@
                 </a>
                 <div class="media-body">
-                    <h5 class="mt-0">@comments.Title</h5>
+                    <h1 class="mt-0">@comments.Title</h1>
                     @Html.Raw(comments.SenitizedContent)
                     <br />
                     <i class="fa fa-calendar pt-1" aria-hidden="true"></i>@comments.CreatedOn

@@ -71,6 +71,8 @@
         [Authorize]
         public async Task<IActionResult> Create(PostCreateInputModel model)
         {
+            var users = await userManager.GetUsersInRoleAsync("User");
+
             if (!this.ModelState.IsValid)
             {
                 // Global message for not created post

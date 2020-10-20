@@ -18,6 +18,21 @@
             this.userRepository = userRepository;
         }
 
+        public async Task<bool> ChangeUserName(string email, string userName)
+        {
+            var user = this.userRepository.All()
+                .FirstOrDefault(u => u.Email == email);
+            if (user == null)
+            {
+                throw new ArgumentNullException("User does not exists");
+            }
+
+            user.UserName = userName;
+            this.userRepository.Update(user);
+            await this.userRepository.SaveChangesAsync();
+            return true;
+        }
+
         public async Task<bool> IpAddress(string ip, string email)
         {
             var user = this.userRepository.All()
@@ -27,23 +42,33 @@
             {
                 throw new ArgumentNullException("User does not exists");
             }
-
-            var address = new IpAddress()
+            else
             {
-                Ip = ip,
-                UserId = user.Id,
-                User = user,
-            };
+                var exists = user.IpAddresses.Any(x => x.Ip == ip);
 
-            if (user.IpAddresses.Contains(address))
-            {
-                return true;
+                if (exists)
+                {
+                    return true;
+                }
+                else
+                {
+                    // To Do: ask the user for the unknown address login
+                    var address = new IpAddress()
+                    {
+                        Ip = ip,
+                        UserId = user.Id,
+                        User = user,
+                        Email = email,
+                    };
+
+                    user.IpAddresses.Add(address);
+                    int currentCountsOfUserLogin = user.LoginsCount;
+                    user.LoginsCount = currentCountsOfUserLogin += 1;
+                    this.userRepository.Update(user);
+                    await this.userRepository.SaveChangesAsync();
+                    return false;
+                }
             }
-
-            user.IpAddresses.Add(address);
-            this.userRepository.Update(user);
-            await this.userRepository.SaveChangesAsync();
-            return false;
         }
     }
 }

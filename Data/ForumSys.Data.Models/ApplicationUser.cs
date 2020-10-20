@@ -30,6 +30,8 @@ namespace ForumSys.Data.Models
 
         public DateTime? DeletedOn { get; set; }
 
+        public int LoginsCount { get; set; }
+
         public virtual ICollection<IpAddress> IpAddresses { get; set; }
 
         public virtual ICollection<IdentityUserRole<string>> Roles { get; set; }
