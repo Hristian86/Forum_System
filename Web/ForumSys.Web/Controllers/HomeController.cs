@@ -18,7 +18,7 @@
             return this.View();
         }
 
-        //[Route("/Home/HandleError/{code:int}")]
+        // [Route("/Home/HandleError/{code:int}")]
         public IActionResult HandleError(int code = 404)
         {
             this.ViewData["ErrorMessage"] = $"Error occurred. Error: {code}";

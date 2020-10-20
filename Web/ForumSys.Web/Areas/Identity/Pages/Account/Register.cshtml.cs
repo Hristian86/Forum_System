@@ -14,27 +14,41 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
+using ForumSys.Services.Data;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 
 namespace ForumSys.Web.Areas.Identity.Pages.Account
 {
     [AllowAnonymous]
     public class RegisterModel : PageModel
     {
+        private readonly string adminRole = "Administrator";
+        private readonly string userRole = "User";
+
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
+        private readonly RoleManager<IdentityRole> rolemanager;
+        private readonly IActionContextAccessor accessor;
+        private readonly IUserService userService;
 
         public RegisterModel(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            RoleManager<IdentityRole> rolemanager,
+            IActionContextAccessor accessor,
+            IUserService userService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
+            this.rolemanager = rolemanager;
+            this.accessor = accessor;
+            this.userService = userService;
         }
 
         [BindProperty]
@@ -52,6 +66,8 @@ namespace ForumSys.Web.Areas.Identity.Pages.Account
             [Display(Name = "Email")]
             [RegularExpression(@"^([\w\.\-]{3,30})@([\w\-]{3,15})((\.(\w){2,3})+)$", ErrorMessage = "Invalid email")]
             public string Email { get; set; }
+
+            public string UserName { get; set; }
 
             [Required]
             [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
@@ -77,10 +93,30 @@ namespace ForumSys.Web.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = Input.Email, Email = Input.Email };
+                var user = new ApplicationUser { UserName = Input.UserName, Email = Input.Email };
                 var result = await _userManager.CreateAsync(user, Input.Password);
+
+                if (_userManager.Users.Count() == 1)
+                {
+                    await this.rolemanager.CreateAsync(new IdentityRole { Name = this.adminRole });
+
+                    await this._userManager.AddToRoleAsync(user, adminRole);
+
+                }
+                else
+                {
+                    await this.rolemanager.CreateAsync(new IdentityRole { Name = this.userRole });
+
+                    await this._userManager.AddToRoleAsync(user, userRole);
+
+                }
+
                 if (result.Succeeded)
                 {
+                    var ip = this.accessor.ActionContext.HttpContext.Connection.RemoteIpAddress.ToString();
+
+                    await this.userService.IpAddress(ip, this.Input.Email);
+
                     _logger.LogInformation("User created a new account with password.");
 
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);

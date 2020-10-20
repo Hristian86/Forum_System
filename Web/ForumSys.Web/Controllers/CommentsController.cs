@@ -8,6 +8,7 @@
     using ForumSys.Data.Models;
     using ForumSys.Services.Data;
     using ForumSys.Web.ViewModels.OutPutViewModels.Comments;
+    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
 
@@ -24,11 +25,18 @@
             this.userManager = userManager;
         }
 
+        [HttpPost]
         public async Task<IActionResult> Create(CommentsInputModel model)
         {
             try
             {
                 var user = await this.userManager.GetUserAsync(this.User);
+                if (user == null)
+                {
+                    // Identity/Account/Login
+                    return this.Redirect("/Identity/Account/Login");
+                }
+
                 await this.commentService.CreateComment(model.PostId, user.Id, model.Content, model.Title);
 
                 return this.RedirectToAction("ById", "Post", new { id = model.PostId });
@@ -37,6 +45,12 @@
             {
                 if (ex.Message == "Content must be at least 5 symbols")
                 {
+                    this.TempData["error"] = "Content is required";
+                    return this.RedirectToAction("ById", "Post", new { id = model.PostId });
+                }
+                else if (ex.Message == "Content must be under 15000 symbols")
+                {
+                    this.TempData["error"] = ex.Message;
                     return this.RedirectToAction("ById", "Post", new { id = model.PostId });
                 }
 

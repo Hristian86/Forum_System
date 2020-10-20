@@ -9,6 +9,13 @@
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/css/font-awesome.min.css" />
 
+@if (this.TempData["error"] != null)
+{
+    <div class="alert alert-success">
+        @this.TempData["error"]
+    </div>
+}
+
 <div class="media">
     @*<img class="mr-3" src="..." alt="Generic placeholder image">*@
     <div class="media-body">
@@ -66,7 +73,7 @@
 
         </div>
         <hr />
-        @foreach (var comments in Model.Comments)
+        @foreach (var comments in Model.Comments.OrderByDescending(x => x.CreatedOn))
         {
 
             <div class="media pl-sm-5 ml-sm-5 mt-3">

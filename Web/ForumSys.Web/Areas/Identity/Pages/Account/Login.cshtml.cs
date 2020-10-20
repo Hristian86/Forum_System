@@ -12,6 +12,8 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using ForumSys.Services.Data;
 
 namespace ForumSys.Web.Areas.Identity.Pages.Account
 {
@@ -19,14 +21,22 @@ namespace ForumSys.Web.Areas.Identity.Pages.Account
     public class LoginModel : PageModel
     {
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IActionContextAccessor accessor;
+        private readonly IUserService userService;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly ILogger<LoginModel> _logger;
 
-        public LoginModel(SignInManager<ApplicationUser> signInManager, 
+        public LoginModel(
+            SignInManager<ApplicationUser> signInManager, 
             ILogger<LoginModel> logger,
-            UserManager<ApplicationUser> userManager)
+            UserManager<ApplicationUser> userManager,
+            IActionContextAccessor accessor,
+            IUserService userService
+            )
         {
             _userManager = userManager;
+            this.accessor = accessor;
+            this.userService = userService;
             _signInManager = signInManager;
             _logger = logger;
         }
@@ -46,6 +56,8 @@ namespace ForumSys.Web.Areas.Identity.Pages.Account
             [Required]
             [EmailAddress]
             [StringLength(55, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
+            [Display(Name = "Email")]
+            [RegularExpression(@"^([\w\.\-]{3,30})@([\w\-]{3,15})((\.(\w){2,3})+)$", ErrorMessage = "Invalid email")]
             public string Email { get; set; }
 
             [Required]
@@ -80,11 +92,18 @@ namespace ForumSys.Web.Areas.Identity.Pages.Account
 
             if (ModelState.IsValid)
             {
+
+                var ip = this.accessor.ActionContext.HttpContext.Connection.RemoteIpAddress.ToString();
+                await this.userService.IpAddress(ip, this.Input.Email);
+
                 // This doesn't count login failures towards account lockout
                 // To enable password failures to trigger account lockout, set lockoutOnFailure: true
                 var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
+
                 if (result.Succeeded)
                 {
+
+
                     _logger.LogInformation("User logged in.");
                     return LocalRedirect(returnUrl);
                 }

@@ -46,13 +46,17 @@
         }
 
         [Authorize]
-        public IActionResult Create()
+        public IActionResult Create(int? id)
         {
             try
             {
                 var categoriesList = this.categories.GetAll<CategoryDropDownViewModel>();
                 var viewModel = new PostCreateInputModel();
                 viewModel.Categories = categoriesList;
+                if (id != null)
+                {
+                    viewModel.Id = (int)id;
+                }
 
                 return this.View(viewModel);
             }
@@ -76,7 +80,7 @@
             try
             {
                 var currUser = await this.userManager.GetUserAsync(this.User);
-                var postId = await this.postService.CreateAsync(model.Title, model.Content, model.CategoryId, currUser.Id);
+                var postId = await this.postService.CreateAsync(model.Title, model.Content, model.Id, currUser.Id);
                 return this.RedirectToAction("ById", new { id = postId });
             }
             catch (Exception ex)

@@ -9,6 +9,9 @@
 
 <div class="alert alert-info">@Model.Description</div>
 
+
+    <a class="nav-link btn btn-primary mb-3" asp-action="Create" asp-area="" asp-controller="Post" asp-route-id="@Model.Id">Add new post</a>
+
 @*<form asp-controller="Categories" asp-action="ByName" method="get">
         <input type="hidden" name="name" value="@Model.Title" />
         <input type="hidden" name="page" value="2" />

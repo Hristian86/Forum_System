@@ -17,6 +17,7 @@ namespace ForumSys.Data.Models
             this.Claims = new HashSet<IdentityUserClaim<string>>();
             this.Logins = new HashSet<IdentityUserLogin<string>>();
             this.Posts = new HashSet<Post>();
+            this.IpAddresses = new HashSet<IpAddress>();
         }
 
         // Audit info
@@ -28,6 +29,8 @@ namespace ForumSys.Data.Models
         public bool IsDeleted { get; set; }
 
         public DateTime? DeletedOn { get; set; }
+
+        public virtual ICollection<IpAddress> IpAddresses { get; set; }
 
         public virtual ICollection<IdentityUserRole<string>> Roles { get; set; }
 

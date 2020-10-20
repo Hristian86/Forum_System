@@ -34,6 +34,10 @@
             {
                 throw new ArgumentException("Content must be at least 5 symbols");
             }
+            else if (content.Length > 15000)
+            {
+                throw new ArgumentException("Content must be under 15000 symbols");
+            }
 
             if (userId == null)
             {
